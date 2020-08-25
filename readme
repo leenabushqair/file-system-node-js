@@ -1,1 +1,4 @@
 
+1-readPlain function will be responsible of reading from the input.csv file.
+2- function saveToFile will take array of users as a parameter and save it to a file.
+3-function readJsonFile will read the previous file and print it in console
