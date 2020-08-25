@@ -1,21 +1,21 @@
 const csv = require('csv-parser');
 const fs = require('fs');
-const results = []; //to store the result of the csv file here!
+let users = []; //to store the result of the csv file here!
 
-function readPlain () {
-	fs.createReadStream('input.csv')
-	.pipe(csv({}))
-	.on('data', (data) => results.push(data))
-	.on('end', () => {
-		console.log(results);
-	}
-	);
+ function readPlain () {
+	const data=fs.readFileSync("input.csv", "utf-8", function(err){console.log(err);});
+	const userFields = ["id", "first_name", "last_name","email", "gender","ip_address","color","parentId"];
+ 	users = data.split('\n').slice(1).filter(Boolean).map(user=>{
+		const userParts =user.split(',');
+		const parts= userParts.map((part, index)=>({[userFields[index]]:part}));
+		return Object.assign({},...parts);
+	});	
 }
-
-function saveToFile (usersArr) {
-	var obj = {users: usersArr};		
-	var json = JSON.stringify(obj);
-	fs.writeFile('output.json', json, 'utf8', function(err){console.log(err);});
+	
+function saveToFile (users) {	
+	console.log(users.map((user) => user.first_name));
+	const stringifiedUsers  = JSON.stringify(users.map((user) => user.first_name));
+	fs.writeFile('output.json', stringifiedUsers , 'utf8', function(err){console.log(err);});
 }
   
 function readJsonFile() {
@@ -27,8 +27,6 @@ function readJsonFile() {
 		console.log(user);
 	});
 }
-
-let usersArr = ['user1', 'user2', 'user3'];
-readPlain();
-saveToFile(usersArr);
+readPlain()
+saveToFile(users);
 readJsonFile();
